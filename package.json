@@ -1,5 +1,5 @@
 {
-  "name": "node-ahcli",
+  "name": "ahcli",
   "version": "0.0.1",
   "description": "Node.js command line client for actionHero",
   "main": "./bin/ahcli",
