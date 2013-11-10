@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+'use strict';
+
+var client = require(__dirname + '/../lib/client');
+var config = require(__dirname + '/../lib/config');
+var parser = require("nomnom");
+
+config.loadConfig(function (err) {
+  if (err) {
+    console.log('ERROR:', err);
+    process.exit(1);
+  }
+  client.init(config.config, function (err) {
+    Object.keys(client.api).forEach(function (command) {
+      var option = {
+        command: command,
+        description: client.api[command].description,
+        defaults: {},
+        optional: {}
+      };
+      var opts = {};
+      var pos = 1;
+      client.api[command].required.forEach(function (required) {
+        opts[required] = {
+          position: pos++,
+          required: true
+        }
+      })
+      client.api[command].optional.forEach(function (optional) {
+        opts[optional] = {
+          metavar: optional.toUpperCase()
+        }
+      })
+      var cmd = parser.command(command)
+        .options(opts)
+        .callback(function (opts) {
+          var command = opts[0];
+          delete opts[0];
+          delete opts._;
+          client.run(command, opts, function (err, result) {
+            if (err) {
+              console.log('ERROR:', err);
+              process.exit(1);
+            }
+            console.log('Response:', result.statusCode);
+            console.log('Result:', result.body);
+            process.exit(0);
+          });
+        });
+    });
+    parser.parse();
+  });
+})

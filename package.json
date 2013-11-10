@@ -1,0 +1,24 @@
+{
+  "name": "node-ahcli",
+  "version": "0.0.1",
+  "description": "Node.js command line client for actionHero",
+  "main": "./bin/ahcli",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "ahcli": "./bin/ahcli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dunse/node-ahcli.git"
+  },
+  "author": "Pehr Johansson <pehr.l.johansson@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "async": "0.2.x",
+    "nomnom": "1.6.x",
+    "prompt": "0.2.x",
+    "request": "2.27.x"
+  }
+}
