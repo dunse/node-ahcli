@@ -5,6 +5,14 @@ var client = require(__dirname + '/../lib/client');
 var config = require(__dirname + '/../lib/config');
 var parser = require("nomnom");
 
+// Add default options
+parser.options({
+  verbose: {
+    abbr: 'v',
+    flag: true
+  }
+});
+
 config.loadConfig(function (err) {
   if (err) {
     console.log('ERROR:', err);
@@ -34,15 +42,25 @@ config.loadConfig(function (err) {
         .help(client.api[command].description)
         .callback(function (opts) {
           var command = opts[0];
+          var verbose = opts.verbose || false;
           delete opts[0];
           delete opts._;
+          delete opts.verbose;
           client.run(command, opts, function (err, result) {
             if (err) {
               console.log('ERROR:', err);
               process.exit(1);
             }
-            console.log('Response:', result.statusCode);
-            console.log('Result:', JSON.stringify(result.body, null, '\t'));
+            if (verbose) {
+              console.log('------------------------------------ REQUEST ------------------------------------')
+              console.log(result.request.uri);
+              console.log('------------------------------------ REQUEST ------------------------------------')
+              console.log('------------------------------------ RESPONSE ------------------------------------')
+              console.log('statusCode:', result.statusCode);
+              console.log(result.headers);
+              console.log('------------------------------------ RESPONSE ------------------------------------')
+            }
+            console.log(JSON.stringify(result.body, null, '\t'));
             process.exit(0);
           });
         });
